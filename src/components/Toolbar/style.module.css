@@ -12,4 +12,8 @@
     box-sizing: border-box;
     z-index: 90;
     color: white;
+    font-size: 20px;
+}
+.Content {
+    color: aqua;
 }
