@@ -2,9 +2,18 @@ import React, { Component } from "react";
 
 import Burger from "../../components/Burger";
 import BuildControls from "../../components/BuildControls";
+import Modal from "../../components/general/modal";
+import OrderSummary from "../../components/OrderSummary";
 
 const INGREDIENT_PRICES = {salad: 1000, cheese: 1500, bacon: 2000, meat: 4000};
-class BurgerBuilder extends Component {
+const INGREDIENT_NAMES ={
+  bacon: "Гахайн мах",
+  cheese: "Бяслаг",
+  salad: "Салад",
+  meat: "Үхрийн мах"
+};
+
+class BurgerPage extends Component {
   state = {
     ingredients: {
       salad: 0,
@@ -13,17 +22,24 @@ class BurgerBuilder extends Component {
       meat: 0
     },
 
-    totalPrice: 0
+    totalPrice: 0,
+    purchasing: false,
+    confirmOrder: false
+
   };
 
-  ortsNemeh = type => {
-    console.log("====>" + type);
+  showConfirmModal = () =>{
+    this.setState({confirmOrder: true});
+  }
 
+  ortsNemeh = type => {
+
+    console.log("====>" + type);
     const newIngredients = { ...this.state.ingredients };
     newIngredients[type]++;
     const newPrice = this.state.totalPrice + INGREDIENT_PRICES[type];
+    this.setState({ purchasing: true, totalPrice: newPrice, ingredients: newIngredients });
 
-    this.setState({ totalPrice: newPrice, ingredients: newIngredients });
   };
 
   ortsHasah = type => {
@@ -33,7 +49,7 @@ class BurgerBuilder extends Component {
     newIngredients[type]--;
     const newPrice = this.state.totalPrice - INGREDIENT_PRICES[type];
 
-    this.setState({ totalPrice: newPrice, ingredients: newIngredients });
+    this.setState({ purchasing: newPrice > 0, totalPrice: newPrice, ingredients: newIngredients });
   };
 
   render() {
@@ -45,8 +61,13 @@ class BurgerBuilder extends Component {
 
     return (
       <div>
+        <Modal>
+          <OrderSummary ingredientsNames = {INGREDIENT_NAMES} ingredients={this.state.ingredients}/>
+        </Modal>
         <Burger orts={this.state.ingredients} />
         <BuildControls 
+          ingredientsNames = {INGREDIENT_NAMES}
+          disabled = {!this.state.purchasing}
           price = {this.state.totalPrice}
           disabledIngredients={disabledIngredients}
           ortsNemeh={this.ortsNemeh} 
@@ -56,4 +77,4 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default BurgerBuilder;
+export default BurgerPage;
