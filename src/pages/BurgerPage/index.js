@@ -25,13 +25,19 @@ class BurgerPage extends Component {
     totalPrice: 0,
     purchasing: false,
     confirmOrder: false
-
   };
 
   showConfirmModal = () =>{
     this.setState({confirmOrder: true});
   }
 
+  closeConfirmModal = () =>{
+    this.setState({confirmOrder: false});
+  }
+
+  continueOrder =()=>{
+    console.log("Continue");
+  }
   ortsNemeh = type => {
 
     console.log("====>" + type);
@@ -61,11 +67,18 @@ class BurgerPage extends Component {
 
     return (
       <div>
-        <Modal>
-          <OrderSummary ingredientsNames = {INGREDIENT_NAMES} ingredients={this.state.ingredients}/>
+        <Modal closeConfirmModal = {this.closeConfirmModal} show={this.state.confirmOrder}>
+          <OrderSummary 
+            onCancel = {this.closeConfirmModal} 
+            onContinue = {this.continueOrder}
+            price = {this.state.totalPrice} 
+            ingredientsNames = {INGREDIENT_NAMES} 
+            ingredients={this.state.ingredients}
+          />
         </Modal>
         <Burger orts={this.state.ingredients} />
         <BuildControls 
+          showConfirmModal = {this.showConfirmModal}
           ingredientsNames = {INGREDIENT_NAMES}
           disabled = {!this.state.purchasing}
           price = {this.state.totalPrice}
